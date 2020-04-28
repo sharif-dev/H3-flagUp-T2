@@ -4,4 +4,10 @@
     <string name="alarm_switch_label">Alarm Service</string>
     <string name="shake_detection_switch_label">Shake Detection Service</string>
     <string name="lock_screen_switch_label">Lock Screen Service</string>
+
+    <string name="alarmTimeHint">Click here to set time</string>
+    <string name="alarmSetButtonText">Set Alarm</string>
+    <string name="alarmTimeTextFormat">%d:%d</string>
+
+
 </resources>
