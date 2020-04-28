@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Sensors</string>
+
+    <string name="alarm_switch_label">Alarm Service</string>
+    <string name="shake_detection_switch_label">Shake Detection Service</string>
+    <string name="lock_screen_switch_label">Lock Screen Service</string>
 </resources>
