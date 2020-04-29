@@ -9,5 +9,7 @@
     <string name="alarmSetButtonText">Set Alarm</string>
     <string name="alarmTimeTextFormat">%d:%d</string>
 
+    <string name="alarmNotificationChannelName">Alarm notifications</string>
+    <string name="alarmNotificationChannelDescription">Alarm set notifications</string>
 
 </resources>

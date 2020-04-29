@@ -25,7 +25,7 @@ public class MainActivity extends AppCompatActivity  {
     private Switch lockScreenSwitch;
     private TextView alarmTimeTextView;
 
-    private AlarmService inProgressAlarm = null;
+    private boolean isAnyAlarmActivated = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,11 +40,10 @@ public class MainActivity extends AppCompatActivity  {
         alarmSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                Log.i(TAG, "onCheckedChanged: alarm switch onCheckedChangeTriggered");
+                Log.i(TAG, "onCheckedChanged: alarm switch onCheckedChange called");
                 if (isChecked ) {
-                    Log.i(TAG, "onCheckedChanged: enabling alarm");
                     if (isTimeValid()) {
-                        Log.i(TAG, "onCheckedChanged: setting up alarm, setUpAlarmTriggered");
+                        Log.i(TAG, "onCheckedChanged: setting up alarm");
                         setUpAlarm();
                     } else {
                         Log.i(TAG, "onCheckedChanged: time wasn't set properly");
@@ -52,12 +51,14 @@ public class MainActivity extends AppCompatActivity  {
                         alarmSwitch.toggle();
                     }
                 } else {
-                    if (inProgressAlarm != null) {
-                        Log.i(TAG, "onCheckedChanged: canceling existed alarm");
-                        inProgressAlarm.cancelAlarm();
-                        inProgressAlarm = null;
+                    if (isAnyAlarmActivated) {
+                        Log.i(TAG, "onCheckedChanged: canceling alarm");
+                        isAnyAlarmActivated = false;
+                        Intent intent = new Intent(getApplicationContext(), AlarmService.class);
+                        stopService(intent);
                     } else {
-                        Log.wtf(TAG, "onCheckedChanged: there wasn't any alarms in progress");
+                        Log.i(TAG, "onCheckedChanged: there wasn't any alarms in progress");
+                        Toast.makeText(getApplicationContext(), "There's no activated alarm", Toast.LENGTH_SHORT).show();
                     }
                 }
             }
@@ -66,7 +67,7 @@ public class MainActivity extends AppCompatActivity  {
         alarmTimeTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.i(TAG, "onClick: user clicked on alarmTimeTextView");
+                Log.i(TAG, "onClick: alarmTimeTextView onClick method triggered");
                 showTimePicker();
             }
         });
@@ -92,5 +93,7 @@ public class MainActivity extends AppCompatActivity  {
         alarmIntent.putExtra("hour", hour);
         alarmIntent.putExtra("minute", minute);
         startService(alarmIntent);
+
+        isAnyAlarmActivated = true;
     }
 }
