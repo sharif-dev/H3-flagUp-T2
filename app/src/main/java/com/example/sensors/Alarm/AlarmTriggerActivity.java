@@ -1,4 +1,4 @@
-package com.example.sensors;
+package com.example.sensors.Alarm;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -11,8 +11,7 @@ public class AlarmTriggerActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        // TODO: 4/28/20 R.layout.activity_alarmTrigger has an error, cannot start new activity
+        setContentView(R.layout.activity_alarm_triggered);
         vibratePhone();
         playAlarmSound();
         stopAlarmAfterTenMinutes();

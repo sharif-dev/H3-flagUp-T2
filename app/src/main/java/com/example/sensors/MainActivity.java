@@ -3,6 +3,7 @@ package com.example.sensors;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.CompoundButton;
@@ -41,6 +42,8 @@ public class MainActivity extends AppCompatActivity  {
                 } else {
                     if (inProgressAlarm != null) {
                         inProgressAlarm.cancelAlarm();
+                        inProgressAlarm = null;
+                        alarmTimeTextView.setText("");
                     }
                 }
             }
@@ -64,5 +67,12 @@ public class MainActivity extends AppCompatActivity  {
     }
 
     public void setUpAlarm() {
+        String[] time = alarmTimeTextView.getText().toString().split(":");
+        int hour = Integer.parseInt(time[0]), minute = Integer.parseInt(time[1]);
+
+        Intent alarmIntent = new Intent(this, AlarmService.class);
+        alarmIntent.putExtra("hour", hour);
+        alarmIntent.putExtra("minute", minute);
+        startService(alarmIntent);
     }
 }

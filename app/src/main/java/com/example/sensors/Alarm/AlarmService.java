@@ -10,8 +10,6 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
-import com.example.sensors.AlarmTriggerActivity;
-
 import java.util.Calendar;
 
 public class AlarmService  extends Service{
@@ -25,15 +23,16 @@ public class AlarmService  extends Service{
     private int pendingIntentRequestCode = 0;
 
 
-    public AlarmService(int hour, int minute) {
-        this.hour = hour;
-        this.minute = minute;
 
-        alarmManager = (AlarmManager) getBaseContext().getSystemService(Context.ALARM_SERVICE);
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        this.hour = intent.getIntExtra("hour");
 
-        Intent intent = new Intent(getApplicationContext(), AlarmTriggerActivity.class);
+        alarmManager = (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
+
+        Intent alarmIntent = new Intent(getApplicationContext(), AlarmTriggerActivity.class);
         pendingIntent = PendingIntent.getBroadcast(
-                getApplicationContext(), pendingIntentRequestCode, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+                getApplicationContext(), pendingIntentRequestCode, alarmIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
@@ -44,14 +43,9 @@ public class AlarmService  extends Service{
         alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),
                 snoozeIntervalInMillis, pendingIntent);
 
-    }
-
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-
 
         Toast.makeText(this, "Alarm is Set for " + hour + ":" + minute, Toast.LENGTH_SHORT).show();
-        return super.onStartCommand(intent, flags, startId);
+        return super.onStartCommand(alarmIntent, flags, startId);
     }
 
     public void cancelAlarm() {
