@@ -5,16 +5,19 @@ import androidx.fragment.app.DialogFragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.example.sensors.Alarm.AlarmService;
-import com.example.sensors.Alarm.TimePicker;
+import com.example.sensors.alarm.AlarmService;
+import com.example.sensors.alarm.TimePicker;
 
 public class MainActivity extends AppCompatActivity  {
 
+    private static final String TAG = "MainActivity";
     private String timePickerTag = "TimePicker";
 
     private Switch alarmSwitch;
@@ -37,13 +40,24 @@ public class MainActivity extends AppCompatActivity  {
         alarmSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked && isTimeValid()) {
-                    setUpAlarm();
+                Log.i(TAG, "onCheckedChanged: alarm switch onCheckedChangeTriggered");
+                if (isChecked ) {
+                    Log.i(TAG, "onCheckedChanged: enabling alarm");
+                    if (isTimeValid()) {
+                        Log.i(TAG, "onCheckedChanged: setting up alarm, setUpAlarmTriggered");
+                        setUpAlarm();
+                    } else {
+                        Log.i(TAG, "onCheckedChanged: time wasn't set properly");
+                        Toast.makeText(getApplicationContext(), "Set the time first", Toast.LENGTH_SHORT).show();
+                        alarmSwitch.toggle();
+                    }
                 } else {
                     if (inProgressAlarm != null) {
+                        Log.i(TAG, "onCheckedChanged: canceling existed alarm");
                         inProgressAlarm.cancelAlarm();
                         inProgressAlarm = null;
-                        alarmTimeTextView.setText("");
+                    } else {
+                        Log.wtf(TAG, "onCheckedChanged: there wasn't any alarms in progress");
                     }
                 }
             }
@@ -52,6 +66,7 @@ public class MainActivity extends AppCompatActivity  {
         alarmTimeTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.i(TAG, "onClick: user clicked on alarmTimeTextView");
                 showTimePicker();
             }
         });
@@ -62,14 +77,17 @@ public class MainActivity extends AppCompatActivity  {
     }
 
     private void showTimePicker() {
+        Log.i(TAG, "showTimePicker");
         DialogFragment timePickerFragment = new TimePicker(this);
         timePickerFragment.show(getSupportFragmentManager(),timePickerTag);
     }
 
     public void setUpAlarm() {
+        Log.i(TAG, "setUpAlarm: getting information from alarmTimeTextView");
         String[] time = alarmTimeTextView.getText().toString().split(":");
         int hour = Integer.parseInt(time[0]), minute = Integer.parseInt(time[1]);
 
+        Log.i(TAG, "setUpAlarm: starting alarmService");
         Intent alarmIntent = new Intent(this, AlarmService.class);
         alarmIntent.putExtra("hour", hour);
         alarmIntent.putExtra("minute", minute);

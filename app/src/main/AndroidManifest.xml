@@ -9,11 +9,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Alarm.AlarmTriggerActivity"></activity>
+        <activity android:name=".alarm.AlarmTriggerActivity"></activity>
 
-        <service android:name=".Alarm.AlarmService" />
-        <service android:name=".ShakeDetectionService" />
-        <service android:name=".LockScreenService" />
+        <service android:name=".alarm.AlarmService"
+            android:exported="false"/>
+        <service android:name=".ShakeDetectionService"
+            android:exported="false"/>
+        <service android:name=".LockScreenService"
+            android:exported="false"/>
 
         <activity android:name=".MainActivity">
             <intent-filter>

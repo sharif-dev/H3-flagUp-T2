@@ -1,12 +1,11 @@
-package com.example.sensors.Alarm;
+package com.example.sensors.alarm;
 
-import androidx.appcompat.app.AppCompatActivity;
-
+import android.app.Activity;
 import android.os.Bundle;
 
 import com.example.sensors.R;
 
-public class AlarmTriggerActivity extends AppCompatActivity {
+public class AlarmTriggerActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -1,4 +1,4 @@
-package com.example.sensors.Alarm;
+package com.example.sensors.alarm;
 
 import android.app.Dialog;
 import android.app.TimePickerDialog;
@@ -42,7 +42,7 @@ public class TimePicker extends DialogFragment implements TimePickerDialog.OnTim
         handler.post(new Runnable() {
             @Override
             public void run() {
-                alarmTimeTextView.setText(hourOfDay + ":" + minute);
+                alarmTimeTextView.setText(getString(R.string.alarmTimeTextFormat, hourOfDay , minute));
             }
         });
     }
