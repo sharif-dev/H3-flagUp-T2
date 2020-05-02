@@ -37,6 +37,40 @@ public class MainActivity extends AppCompatActivity  {
         lockScreenSwitch = findViewById(R.id.lockScreenServiceSwitch);
         alarmTimeTextView = findViewById(R.id.alarmTimeTextView);
 
+        lockScreenSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    Log.i(TAG, "onCheckedChanged: starting lock screen service");
+                    Intent intent = new Intent(getApplicationContext(), LockScreenService.class);
+                    startService(intent);
+                    Toast.makeText(getApplicationContext(), "Lock Screen service enabled", Toast.LENGTH_SHORT).show();
+                } else {
+                    Log.i(TAG, "onCheckedChanged: stopping lock screen service");
+                    Intent intent = new Intent(getApplicationContext(), LockScreenService.class);
+                    stopService(intent);
+                    Toast.makeText(getApplicationContext(), "Lock Screen service turned off", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        shakeDetectionSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    Log.i(TAG, "onCheckedChanged: starting shake detection service");
+                    Intent intent = new Intent(getApplicationContext(), ShakeDetectionService.class);
+                    startService(intent);
+                    Toast.makeText(getApplicationContext(), "Shake Detection service enabled", Toast.LENGTH_SHORT).show();
+                } else {
+                    Log.i(TAG, "onCheckedChanged: stopping shake detection service");
+                    Intent intent = new Intent(getApplicationContext(), ShakeDetectionService.class);
+                    stopService(intent);
+                    Toast.makeText(getApplicationContext(), "Shake Detection service turned off", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
         alarmSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -44,6 +78,7 @@ public class MainActivity extends AppCompatActivity  {
                 if (isChecked ) {
                     if (isTimeValid()) {
                         Log.i(TAG, "onCheckedChanged: setting up alarm");
+                        Toast.makeText(getApplicationContext(), "Adding alarm", Toast.LENGTH_SHORT).show();
                         setUpAlarm();
                     } else {
                         Log.i(TAG, "onCheckedChanged: time wasn't set properly");

@@ -8,9 +8,6 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.media.AudioAttributes;
-import android.media.RingtoneManager;
-import android.net.Uri;
 import android.os.Build;
 import android.os.IBinder;
 import android.util.Log;
@@ -24,7 +21,7 @@ import com.example.sensors.R;
 
 import java.util.Calendar;
 
-public class AlarmService  extends Service{
+public class AlarmService extends Service {
 
     private static final String TAG = "AlarmService";
 
@@ -63,14 +60,13 @@ public class AlarmService  extends Service{
     private class AlarmRunnable implements Runnable {
         @Override
         public void run() {
-            Log.i(TAG, "run: new thread is started");
+            Log.i(TAG, "run: new thread is started, initializing alarm manager");
 
-            Log.i(TAG, "run: initializing alarm manager");
             alarmManager = (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
 
             Intent alarmIntent = new Intent(getApplicationContext(), AlarmTriggerActivity.class);
             PendingIntent pendingIntent = PendingIntent.getBroadcast(
-                    getApplicationContext(), pendingIntentRequestCode, alarmIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+                    getApplicationContext(), pendingIntentRequestCode, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
             Calendar calendar = Calendar.getInstance();
             calendar.setTimeInMillis(System.currentTimeMillis());
@@ -78,7 +74,7 @@ public class AlarmService  extends Service{
             calendar.set(Calendar.MINUTE, minute);
 
             int snoozeIntervalInMillis = SNOOZING_INTERVAL_IN_MINUTES * 60 * 1000;
-            alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP,calendar.getTimeInMillis(),
+            alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
                     snoozeIntervalInMillis, pendingIntent);
 
             showAlarmNotification();
@@ -86,52 +82,34 @@ public class AlarmService  extends Service{
     }
 
     private void showAlarmNotification() {
-        // TODO: 4/29/20 can't show heads up notification
+        Log.i(TAG, "showAlarmSetNotification: notification is shown");
 
-        Log.i(TAG, "showAlarmSetNotification: function called");
-
-        long[] vibratePattern = new long[]{10, 10, 10};
         NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), alarmSetNotificationChannelId)
                 .setDefaults(Notification.DEFAULT_ALL)
                 .setSmallIcon(R.drawable.ic_launcher_foreground)
                 .setContentTitle(alarmSetNotificationTitle)
                 .setContentText("An alarm is set for " + hour + ":" + minute)
-                .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setVibrate(vibratePattern);
-
+                .setPriority(NotificationCompat.PRIORITY_HIGH);
 
         NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this);
 
         Notification notification = builder.build();
-        notificationManagerCompat.notify(notificationId,notification);
-
+        notificationManagerCompat.notify(notificationId, notification);
     }
 
     private void createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            Uri soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 
             CharSequence channelName = getString(R.string.alarmNotificationChannelName);
             String channelDescription = getString(R.string.alarmNotificationChannelDescription);
-            int importance = NotificationManager.IMPORTANCE_HIGH;
-
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
 
             NotificationChannel channel = new NotificationChannel(alarmSetNotificationChannelId, channelName, importance);
             channel.setDescription(channelDescription);
-            channel.enableVibration(true);
-            channel.setVibrationPattern(new long[0]);
 
-            if (soundUri != null) {
-                AudioAttributes att = new AudioAttributes.Builder()
-                        .setUsage(AudioAttributes.USAGE_NOTIFICATION)
-                        .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                        .build();
-                channel.setSound(soundUri, att);
-            }
 
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);
-
         }
     }
 
