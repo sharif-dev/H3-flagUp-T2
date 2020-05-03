@@ -13,7 +13,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.sensors.alarm.AlarmService;
-import com.example.sensors.alarm.TimePicker;
 
 public class MainActivity extends AppCompatActivity  {
 
@@ -78,7 +77,7 @@ public class MainActivity extends AppCompatActivity  {
                 if (isChecked ) {
                     if (isTimeValid()) {
                         Log.i(TAG, "onCheckedChanged: setting up alarm");
-                        Toast.makeText(getApplicationContext(), "Adding alarm", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "Alarm added", Toast.LENGTH_SHORT).show();
                         setUpAlarm();
                     } else {
                         Log.i(TAG, "onCheckedChanged: time wasn't set properly");

@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.IBinder;
+import android.os.SystemClock;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -47,6 +48,7 @@ public class AlarmService extends Service {
         Log.i(TAG, "onStartCommand: service started, fetching data from intent");
         hour = intent.getIntExtra("hour", 8);
         minute = intent.getIntExtra("minute", 30);
+        Log.i(TAG, "onStartCommand: fetched data: hour = " + hour + ", minute = " + minute);
 
         createNotificationChannel();
 
@@ -64,31 +66,39 @@ public class AlarmService extends Service {
 
             alarmManager = (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
 
-            Intent alarmIntent = new Intent(getApplicationContext(), AlarmTriggerActivity.class);
+            Intent alarmIntent = new Intent(getApplicationContext(), AlarmReceiver.class);
             PendingIntent pendingIntent = PendingIntent.getBroadcast(
-                    getApplicationContext(), pendingIntentRequestCode, alarmIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                    getBaseContext(), pendingIntentRequestCode, alarmIntent, PendingIntent.FLAG_NO_CREATE);
 
             Calendar calendar = Calendar.getInstance();
             calendar.setTimeInMillis(System.currentTimeMillis());
             calendar.set(Calendar.HOUR_OF_DAY, hour);
             calendar.set(Calendar.MINUTE, minute);
 
-            int snoozeIntervalInMillis = SNOOZING_INTERVAL_IN_MINUTES * 60 * 1000;
-            alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
-                    snoozeIntervalInMillis, pendingIntent);
-
+//            alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+//                    AlarmManager.INTERVAL_FIFTEEN_MINUTES, pendingIntent);
+            alarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,
+                    SystemClock.elapsedRealtime() + 60 * 1000,
+                    AlarmManager.INTERVAL_FIFTEEN_MINUTES,
+                    pendingIntent);
             showAlarmNotification();
         }
     }
 
     private void showAlarmNotification() {
-        Log.i(TAG, "showAlarmSetNotification: notification is shown");
+        Log.i(TAG, "showAlarmSetNotification: notification is pushed");
+
+        String msg;
+        if (minute < 10)
+            msg = "An alarm is set for " + hour + ":" + "0" + minute;
+        else
+            msg = "An alarm is set for " + hour + ":" + minute;
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), alarmSetNotificationChannelId)
                 .setDefaults(Notification.DEFAULT_ALL)
                 .setSmallIcon(R.drawable.ic_launcher_foreground)
                 .setContentTitle(alarmSetNotificationTitle)
-                .setContentText("An alarm is set for " + hour + ":" + minute)
+                .setContentText(msg)
                 .setPriority(NotificationCompat.PRIORITY_HIGH);
 
         NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this);
@@ -116,28 +126,34 @@ public class AlarmService extends Service {
     @Override
     public void onDestroy() {
         Log.i(TAG, "onDestroy");
-        cancelAlarm();
-        removeNotification();
+//        cancelAlarm();
+//        removeNotification();
         super.onDestroy();
     }
 
     public void cancelAlarm() {
-        if (alarmManager != null) {
-            Log.i(TAG, "cancelAlarm: stopping alarm manager");
+        Log.i(TAG, "cancelAlarm: stopping alarm manager");
 
-            Intent alarmIntent = new Intent(getApplicationContext(), AlarmTriggerActivity.class);
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(
-                    getApplicationContext(), pendingIntentRequestCode, alarmIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+        AlarmManager alarmManager = (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
+
+        Intent alarmIntent = new Intent(getBaseContext(), AlarmReceiver.class);
+
+        PendingIntent pendingIntent = PendingIntent.getService(
+                getApplicationContext(), pendingIntentRequestCode, alarmIntent,
+                PendingIntent.FLAG_NO_CREATE);
+
+        if (pendingIntent != null && alarmManager != null) {
             alarmManager.cancel(pendingIntent);
-
             Toast.makeText(getApplicationContext(), "Alarm Canceled", Toast.LENGTH_SHORT).show();
-        } else {
-            Log.wtf(TAG, "cancelAlarm: there is no alarm set");
+            Log.i(TAG, "cancelAlarm: alarm canceled");
+        }else{
+            Log.wtf(TAG, "cancelAlarm: couldn't cancel the alarm(null pointer)");
         }
+
     }
 
     private void removeNotification() {
-        Log.i(TAG, "removeNotification: remove notification");
+        Log.i(TAG, "removeNotification");
         NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.cancel(notificationId);
     }
@@ -145,6 +161,7 @@ public class AlarmService extends Service {
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
+        Log.i(TAG, "onBind");
         return null;
     }
 

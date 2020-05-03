@@ -1,4 +1,4 @@
-package com.example.sensors.alarm;
+package com.example.sensors;
 
 import android.app.Dialog;
 import android.app.TimePickerDialog;

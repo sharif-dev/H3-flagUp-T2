@@ -11,7 +11,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".alarm.AlarmTriggerActivity"></activity>
+        <activity android:name=".alarm.AlarmReceiver"></activity>
 
         <service android:name=".alarm.AlarmService"
             android:exported="false"/>

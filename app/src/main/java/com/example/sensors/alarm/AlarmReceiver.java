@@ -6,9 +6,9 @@ import android.util.Log;
 
 import com.example.sensors.R;
 
-public class AlarmTriggerActivity extends Activity {
+public class AlarmReceiver extends Activity {
 
-    private static final String TAG = "AlarmTriggerActivity";
+    private static final String TAG = "Alarm Receiver";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
