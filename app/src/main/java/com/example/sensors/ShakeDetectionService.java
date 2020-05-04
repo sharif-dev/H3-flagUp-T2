@@ -1,14 +1,19 @@
 package com.example.sensors;
 
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.os.Build;
 import android.os.IBinder;
+import android.os.PowerManager;
 import android.util.Log;
+import android.view.Window;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -36,12 +41,13 @@ public class ShakeDetectionService extends Service {
             float delta = accVal - lastAccVal;
             shake = shake * 0.9f + delta;
 
-            if (shake > 12){
+            if (shake > 6) {
 //                Toast toast = Toast.makeText(getApplicationContext(), "Do Not Shake Me", Toast.LENGTH_LONG);
 //                toast.show();
                 Log.i("shake activity", "Shake detection");
-            }
+                startActivityFunc();
 
+            }
         }
 
         @Override
@@ -49,6 +55,15 @@ public class ShakeDetectionService extends Service {
 
         }
     };
+
+    private void startActivityFunc() {
+
+        PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+        PowerManager.WakeLock wl = pm.newWakeLock((PowerManager.SCREEN_BRIGHT_WAKE_LOCK | PowerManager.FULL_WAKE_LOCK
+                        | PowerManager.ACQUIRE_CAUSES_WAKEUP),
+                "My:ag");
+        wl.acquire(1000);
+    }
 
     @Nullable
     @Override
@@ -66,5 +81,7 @@ public class ShakeDetectionService extends Service {
         shake = 0.00f;
 
     }
+
+
 
 }
