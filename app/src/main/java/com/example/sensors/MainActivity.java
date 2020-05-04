@@ -1,8 +1,13 @@
 package com.example.sensors;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 
+import android.app.Activity;
+import android.app.admin.DevicePolicyManager;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,13 +17,17 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.sensors.lockscreen.AdminReceiver;
 import com.example.sensors.alarm.AlarmService;
+import com.example.sensors.lockscreen.LockScreenService;
 
-public class MainActivity extends AppCompatActivity  {
+public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
+    private static final int ADMIN_SUCCESS = 1;
     private String timePickerTag = "TimePicker";
-
+    private DevicePolicyManager deviceManager;
+    private ComponentName componentName;
     private Switch alarmSwitch;
     private Switch shakeDetectionSwitch;
     private Switch lockScreenSwitch;
@@ -27,29 +36,43 @@ public class MainActivity extends AppCompatActivity  {
     private boolean isAnyAlarmActivated = false;
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (resultCode == Activity.RESULT_OK)
+            startLockScreenService();
+        else
+            lockScreenSwitch.setChecked(false);
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        componentName = new ComponentName(this, AdminReceiver.class);
+        deviceManager = (DevicePolicyManager)getSystemService(Context.DEVICE_POLICY_SERVICE);
         alarmSwitch = findViewById(R.id.alarmServiceSwitch);
         shakeDetectionSwitch = findViewById(R.id.shakeDetectionSwitch);
         lockScreenSwitch = findViewById(R.id.lockScreenServiceSwitch);
         alarmTimeTextView = findViewById(R.id.alarmTimeTextView);
-
         lockScreenSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    Log.i(TAG, "onCheckedChanged: starting lock screen service");
-                    Intent intent = new Intent(getApplicationContext(), LockScreenService.class);
-                    startService(intent);
-                    Toast.makeText(getApplicationContext(), "Lock Screen service enabled", Toast.LENGTH_SHORT).show();
-                } else {
-                    Log.i(TAG, "onCheckedChanged: stopping lock screen service");
-                    Intent intent = new Intent(getApplicationContext(), LockScreenService.class);
-                    stopService(intent);
-                    Toast.makeText(getApplicationContext(), "Lock Screen service turned off", Toast.LENGTH_SHORT).show();
+                    if (!deviceManager.isAdminActive(componentName))
+                    {
+                        Intent intent = new Intent(DevicePolicyManager
+                                .ACTION_ADD_DEVICE_ADMIN);
+                        intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN,
+                                componentName);
+                        intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION,
+                                "We need admin rights to lock your screen.");
+                        startActivityForResult(intent, ADMIN_SUCCESS);
+                    }
+                    else
+                        startLockScreenService();
                 }
+                else
+                    stopLockScreenService();
             }
         });
 
@@ -105,6 +128,20 @@ public class MainActivity extends AppCompatActivity  {
                 showTimePicker();
             }
         });
+    }
+
+    private void stopLockScreenService() {
+        Log.i(TAG, "onCheckedChanged: stopping lock screen service");
+        Intent intent = new Intent(getApplicationContext(), LockScreenService.class);
+        if (stopService(intent))
+            Toast.makeText(getApplicationContext(), "Lock Screen service turned off", Toast.LENGTH_SHORT).show();
+    }
+
+    private void startLockScreenService() {
+        Log.i(TAG, "onCheckedChanged: starting lock screen service");
+        Intent intent = new Intent(getApplicationContext(), LockScreenService.class);
+        startService(intent);
+        Toast.makeText(getApplicationContext(), "Lock Screen service enabled", Toast.LENGTH_SHORT).show();
     }
 
     private boolean isTimeValid() {
