@@ -68,8 +68,7 @@ public class MainActivity extends AppCompatActivity {
                                 .ACTION_ADD_DEVICE_ADMIN);
                         intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN,
                                 componentName);
-                        intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION,
-                                "We need admin rights to lock your screen.");
+                        intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, getResources().getString(R.string.needAdminRights));
                         startActivityForResult(intent, ADMIN_SUCCESS);
                     } else
                         startLockScreenService();
@@ -82,15 +81,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    Log.i(TAG, "onCheckedChanged: starting shake detection service");
                     Intent intent = new Intent(getApplicationContext(), ShakeDetectionService.class);
                     startService(intent);
-                    Toast.makeText(getApplicationContext(), "Shake Detection service enabled", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), getResources().getString(R.string.shakeDetectionEnabled), Toast.LENGTH_SHORT).show();
                 } else {
-                    Log.i(TAG, "onCheckedChanged: stopping shake detection service");
                     Intent intent = new Intent(getApplicationContext(), ShakeDetectionService.class);
                     stopService(intent);
-                    Toast.makeText(getApplicationContext(), "Shake Detection service turned off", Toast.LENGTH_SHORT).show();
+	                Toast.makeText(getApplicationContext(), getResources().getString(R.string.shakeDetectionDisabled), Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -102,11 +99,11 @@ public class MainActivity extends AppCompatActivity {
                 if (isChecked) {
                     if (isTimeValid()) {
                         Log.i(TAG, "onCheckedChanged: setting up alarm");
-                        Toast.makeText(getApplicationContext(), "Alarm added", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), getResources().getString(R.string.alarmAdded), Toast.LENGTH_SHORT).show();
                         setUpAlarm();
                     } else {
                         Log.i(TAG, "onCheckedChanged: time wasn't set properly");
-                        Toast.makeText(getApplicationContext(), "Set the time first", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), getResources().getString(R.string.setTheTimeFirst), Toast.LENGTH_SHORT).show();
                         alarmSwitch.toggle();
                     }
                 } else {
@@ -117,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
                         stopService(intent);
                     } else {
                         Log.i(TAG, "onCheckedChanged: there wasn't any alarms in progress");
-                        Toast.makeText(getApplicationContext(), "There's no activated alarm", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), getResources().getString(R.string.noActivatedAlarm), Toast.LENGTH_SHORT).show();
                     }
                 }
             }
@@ -136,14 +133,14 @@ public class MainActivity extends AppCompatActivity {
         Log.i(TAG, "onCheckedChanged: stopping lock screen service");
         Intent intent = new Intent(getApplicationContext(), LockScreenService.class);
         if (stopService(intent))
-            Toast.makeText(getApplicationContext(), "Lock Screen service turned off", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), getResources().getString(R.string.lockScreenDisabled), Toast.LENGTH_SHORT).show();
     }
 
     private void startLockScreenService() {
         Log.i(TAG, "onCheckedChanged: starting lock screen service");
         Intent intent = new Intent(getApplicationContext(), LockScreenService.class);
         startService(intent);
-        Toast.makeText(getApplicationContext(), "Lock Screen service enabled", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), getResources().getString(R.string.lockScreenEnabled), Toast.LENGTH_SHORT).show();
     }
 
     private boolean isTimeValid() {
