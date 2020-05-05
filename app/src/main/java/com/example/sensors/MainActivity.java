@@ -58,10 +58,6 @@ public class MainActivity extends AppCompatActivity implements
 						}
 					}
 				});
-		ActionBar actionBar = getSupportActionBar();
-		if (actionBar != null) {
-			actionBar.setDisplayHomeAsUpEnabled(true);
-		}
 	}
 
 	@Override

@@ -39,7 +39,10 @@ public class TimePicker extends DialogFragment implements TimePickerDialog.OnTim
         handler.post(new Runnable() {
             @Override
             public void run() {
-                timeText.setSummary(getString(R.string.alarmTimeTextFormat, hourOfDay , minute));
+                if (minute < 10)
+                    timeText.setSummary(getString(R.string.alarmTimeTextFormatWithLeadingZero, hourOfDay , minute));
+                else
+                    timeText.setSummary(getString(R.string.alarmTimeTextFormat, hourOfDay , minute));
             }
         });
     }

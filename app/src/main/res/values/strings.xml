@@ -7,6 +7,7 @@
 
     <string name="alarmTimeHint">Click here to set time</string>
     <string name="alarmSetButtonText">Set Alarm</string>
+    <string name="alarmTimeTextFormatWithLeadingZero">%d:0%d</string>
     <string name="alarmTimeTextFormat">%d:%d</string>
 
     <string name="alarmNotificationChannelName">Alarm notifications</string>
@@ -25,6 +26,7 @@
 
     <!-- Preference Titles -->
     <string name="alarmHeader">Set an Alarm</string>
+    <string name="wakeUp">Wake Up Alarm</string>
     <string name="alarmDismiss">Rotate the phone to dismiss alarm</string>
     <string name="shakeHeader">Light Screen on Shake</string>
     <string name="shakeTitle">Enable Light Screen on Shake Service</string>
