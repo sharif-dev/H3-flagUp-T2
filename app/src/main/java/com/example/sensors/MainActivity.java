@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.Context;
@@ -17,9 +19,12 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.sensors.alarm.AlarmReceiver;
 import com.example.sensors.lockscreen.AdminReceiver;
 import com.example.sensors.alarm.AlarmService;
 import com.example.sensors.lockscreen.LockScreenService;
+
+import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -49,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         componentName = new ComponentName(this, AdminReceiver.class);
-        deviceManager = (DevicePolicyManager)getSystemService(Context.DEVICE_POLICY_SERVICE);
+        deviceManager = (DevicePolicyManager) getSystemService(Context.DEVICE_POLICY_SERVICE);
         alarmSwitch = findViewById(R.id.alarmServiceSwitch);
         shakeDetectionSwitch = findViewById(R.id.shakeDetectionSwitch);
         lockScreenSwitch = findViewById(R.id.lockScreenServiceSwitch);
@@ -58,8 +63,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    if (!deviceManager.isAdminActive(componentName))
-                    {
+                    if (!deviceManager.isAdminActive(componentName)) {
                         Intent intent = new Intent(DevicePolicyManager
                                 .ACTION_ADD_DEVICE_ADMIN);
                         intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN,
@@ -67,11 +71,9 @@ public class MainActivity extends AppCompatActivity {
                         intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION,
                                 "We need admin rights to lock your screen.");
                         startActivityForResult(intent, ADMIN_SUCCESS);
-                    }
-                    else
+                    } else
                         startLockScreenService();
-                }
-                else
+                } else
                     stopLockScreenService();
             }
         });
@@ -97,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 Log.i(TAG, "onCheckedChanged: alarm switch onCheckedChange called");
-                if (isChecked ) {
+                if (isChecked) {
                     if (isTimeValid()) {
                         Log.i(TAG, "onCheckedChanged: setting up alarm");
                         Toast.makeText(getApplicationContext(), "Alarm added", Toast.LENGTH_SHORT).show();
@@ -151,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
     private void showTimePicker() {
         Log.i(TAG, "showTimePicker");
         DialogFragment timePickerFragment = new TimePicker(this);
-        timePickerFragment.show(getSupportFragmentManager(),timePickerTag);
+        timePickerFragment.show(getSupportFragmentManager(), timePickerTag);
     }
 
     public void setUpAlarm() {
@@ -167,4 +169,5 @@ public class MainActivity extends AppCompatActivity {
 
         isAnyAlarmActivated = true;
     }
+
 }

@@ -1,36 +1,19 @@
 package com.example.sensors.alarm;
 
-import android.app.Activity;
-import android.os.Bundle;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 
-import com.example.sensors.R;
+public class AlarmReceiver extends BroadcastReceiver {
 
-public class AlarmReceiver extends Activity {
-
-    private static final String TAG = "Alarm Receiver";
+    private static String TAG = "AlarmReceiver";
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_alarm_triggered);
-
-        Log.i(TAG, "onCreate: alarm!");
-
-        vibratePhone();
-        playAlarmSound();
-        stopAlarmAfterTenMinutes();
-    }
-
-    private void stopAlarmAfterTenMinutes() {
-
-    }
-
-    private void playAlarmSound() {
-
-    }
-
-    private void vibratePhone() {
-
+    public void onReceive(Context context, Intent intent) {
+        Log.i(TAG, "onReceive called in broadcast receiver");       //todo change the log.e
+        Intent alarmActivityIntent = new Intent(context, AlarmActivity.class);
+        alarmActivityIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(alarmActivityIntent);
     }
 }

@@ -6,6 +6,7 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
@@ -29,6 +30,7 @@ public class AlarmService extends Service {
     private int hour, minute;
 
     private AlarmManager alarmManager;
+    private PendingIntent pendingIntent;
     private int pendingIntentRequestCode = 0;
     private int notificationId = 0;         //unique notification ids used for notifying the alarm is set
 
@@ -48,42 +50,31 @@ public class AlarmService extends Service {
         Log.i(TAG, "onStartCommand: service started, fetching data from intent");
         hour = intent.getIntExtra("hour", 8);
         minute = intent.getIntExtra("minute", 30);
-        Log.i(TAG, "onStartCommand: fetched data: hour = " + hour + ", minute = " + minute);
 
         createNotificationChannel();
 
-        Runnable alarmRunnable = new AlarmRunnable();
-        Thread alarmThread = new Thread(alarmRunnable);
-        alarmThread.start();
+        setupAlarm();
+        showAlarmNotification();
 
         return super.onStartCommand(intent, flags, startId);
     }
 
-    private class AlarmRunnable implements Runnable {
-        @Override
-        public void run() {
-            Log.i(TAG, "run: new thread is started, initializing alarm manager");
+    private void setupAlarm() {
+        Log.i(TAG, "setupAlarm called");
 
-            alarmManager = (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, hour);
+        calendar.set(Calendar.MINUTE, minute);
+        calendar.set(Calendar.SECOND, 0);
 
-            Intent alarmIntent = new Intent(getApplicationContext(), AlarmReceiver.class);
-            PendingIntent pendingIntent = PendingIntent.getBroadcast(
-                    getBaseContext(), pendingIntentRequestCode, alarmIntent, PendingIntent.FLAG_NO_CREATE);
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(this, AlarmReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 1, intent, 0);
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+                pendingIntent);
 
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTimeInMillis(System.currentTimeMillis());
-            calendar.set(Calendar.HOUR_OF_DAY, hour);
-            calendar.set(Calendar.MINUTE, minute);
-
-//            alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
-//                    AlarmManager.INTERVAL_FIFTEEN_MINUTES, pendingIntent);
-            alarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,
-                    SystemClock.elapsedRealtime() + 60 * 1000,
-                    AlarmManager.INTERVAL_FIFTEEN_MINUTES,
-                    pendingIntent);
-            showAlarmNotification();
-        }
     }
+
 
     private void showAlarmNotification() {
         Log.i(TAG, "showAlarmSetNotification: notification is pushed");
@@ -126,29 +117,18 @@ public class AlarmService extends Service {
     @Override
     public void onDestroy() {
         Log.i(TAG, "onDestroy");
-//        cancelAlarm();
-//        removeNotification();
+        cancelAlarm();
+        removeNotification();
         super.onDestroy();
     }
 
     public void cancelAlarm() {
-        Log.i(TAG, "cancelAlarm: stopping alarm manager");
+        Log.i(TAG, "cancelAlarm");
 
-        AlarmManager alarmManager = (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
-
-        Intent alarmIntent = new Intent(getBaseContext(), AlarmReceiver.class);
-
-        PendingIntent pendingIntent = PendingIntent.getService(
-                getApplicationContext(), pendingIntentRequestCode, alarmIntent,
-                PendingIntent.FLAG_NO_CREATE);
-
-        if (pendingIntent != null && alarmManager != null) {
-            alarmManager.cancel(pendingIntent);
-            Toast.makeText(getApplicationContext(), "Alarm Canceled", Toast.LENGTH_SHORT).show();
-            Log.i(TAG, "cancelAlarm: alarm canceled");
-        }else{
-            Log.wtf(TAG, "cancelAlarm: couldn't cancel the alarm(null pointer)");
-        }
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(this, AlarmReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 1, intent, 0);
+        alarmManager.cancel(pendingIntent);
 
     }
 
