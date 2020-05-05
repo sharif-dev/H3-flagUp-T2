@@ -130,8 +130,9 @@ public class AlarmActivity extends AppCompatActivity {
     }
 
     private void vibratePhone() {
+        long vibrationPattern[] = {0, 1000, 1000};
         Log.i(TAG, "vibratePhone");
         vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-        vibrator.vibrate(alarmDuration);
+        vibrator.vibrate(vibrationPattern, 0);
     }
 }

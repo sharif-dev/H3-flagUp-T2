@@ -2,7 +2,7 @@
 
     <SwitchPreferenceCompat
         app:key="status"
-        app:title="@string/shake_title" />
+        app:title="@string/shakeTitle" />
 
 <!--    <SwitchPreferenceCompat-->
 <!--        app:dependency="sync"-->

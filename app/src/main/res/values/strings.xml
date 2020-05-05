@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Sensors</string>
 
-    <string name="alarmSwitchLabel">Alarm Service</string>
+    <string name="alarmSwitchLabel">Enable Alarm</string>
     <string name="shakeDetectionSwitchLabel">Shake Detection Service</string>
     <string name="lockScreenSwitchLabel">Lock Screen Service</string>
 
@@ -21,16 +21,17 @@
     <string name="shakeDetectionDisabled">Shake Detection service disabled</string>
     <string name="lockScreenEnabled">Lock Screen service enabled</string>
     <string name="lockScreenDisabled">Lock Screen service disabled</string>
-    <string name="title_activity_lock_screen">Settings</string>
+    <string name="titleActivityMain">Sensors</string>
 
     <!-- Preference Titles -->
-    <string name="alarm_header">Set an Alarm</string>
-    <string name="shake_header">Light Screen on Shake</string>
-    <string name="shake_title">Enable Light Screen on Shake Service</string>
-    <string name="lock_header">Lock Screen on Tilt</string>
-    <string name="lock_title">Enable Lock Screen on Tilt Service</string>
-    <string name="angle_description">Angle that phone locks:</string>
-    <string name="current_angle">Current Angle: %1$d degrees</string>
+    <string name="alarmHeader">Set an Alarm</string>
+    <string name="alarmDismiss">Rotate the phone to dismiss alarm</string>
+    <string name="shakeHeader">Light Screen on Shake</string>
+    <string name="shakeTitle">Enable Light Screen on Shake Service</string>
+    <string name="lockHeader">Lock Screen on Tilt</string>
+    <string name="lockTitle">Enable Lock Screen on Tilt Service</string>
+    <string name="angleDescription">Angle that phone locks:</string>
+    <string name="currentAngle">Current Angle: %1$d degrees</string>
 
 
 </resources>

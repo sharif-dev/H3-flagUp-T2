@@ -21,7 +21,7 @@
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Rotate the phone to stop alarm"
+        android:text="@string/alarmDismiss"
         android:textSize="20sp"
         app:layout_constraintBottom_toTopOf="@+id/remainingTimeTextView"
         app:layout_constraintEnd_toEndOf="parent"

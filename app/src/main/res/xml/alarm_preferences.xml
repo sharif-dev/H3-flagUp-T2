@@ -1,16 +1,19 @@
-<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <SwitchPreferenceCompat
+        app:key="status"
+        app:title="@string/alarmSwitchLabel" />
 
-    <EditTextPreference
-        app:key="signature"
-        app:title="salam"
+    <Preference
+        app:key="time"
+        app:title="Alarm Time"
         app:useSimpleSummaryProvider="true" />
 
-<!--    <ListPreference-->
-<!--        app:defaultValue="reply"-->
-<!--        app:entries="@array/reply_entries"-->
-<!--        app:entryValues="@array/reply_values"-->
-<!--        app:key="reply"-->
-<!--        app:title="@string/reply_title"-->
-<!--        app:useSimpleSummaryProvider="true" />-->
+    <SeekBarPreference
+        android:id="@+id/velocity"
+        android:defaultValue="80"
+        android:max="200"
+        app:key="velocity"
+        app:summary="Angular Velocity" />
 
 </PreferenceScreen>

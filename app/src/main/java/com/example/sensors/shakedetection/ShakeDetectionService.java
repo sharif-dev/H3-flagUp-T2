@@ -1,4 +1,4 @@
-package com.example.sensors;
+package com.example.sensors.shakedetection;
 
 import android.app.Service;
 import android.content.Context;

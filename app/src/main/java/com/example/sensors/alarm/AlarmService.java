@@ -47,6 +47,11 @@ public class AlarmService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.i(TAG, "onStartCommand: service started, fetching data from intent");
+        if (intent == null)
+        {
+            Log.w(TAG, "onStartCommand: Null Intent!");
+            return super.onStartCommand(intent, flags, startId);
+        }
         hour = intent.getIntExtra("hour", 8);
         minute = intent.getIntExtra("minute", 30);
 

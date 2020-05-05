@@ -1,30 +1,27 @@
-package com.example.sensors;
+package com.example.sensors.alarm;
 
 import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.os.Handler;
-import android.widget.TextView;
+import android.os.Looper;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
+import androidx.preference.Preference;
 
-import com.example.sensors.MainActivity;
 import com.example.sensors.R;
 
 import java.util.Calendar;
 
 public class TimePicker extends DialogFragment implements TimePickerDialog.OnTimeSetListener {
 
-    private TextView alarmTimeTextView;
-    private MainActivity mainActivity;
     private Handler handler;
-
-    public TimePicker(MainActivity mainActivity) {
-        this.mainActivity = mainActivity;
-        this.handler = new Handler(mainActivity.getMainLooper());
-        alarmTimeTextView = mainActivity.findViewById(R.id.alarmTimeTextView);
+    Preference timeText;
+    public TimePicker(Looper looper, Preference pref) {
+        this.handler = new Handler(looper);
+        timeText = pref;
     }
 
     @NonNull
@@ -42,7 +39,7 @@ public class TimePicker extends DialogFragment implements TimePickerDialog.OnTim
         handler.post(new Runnable() {
             @Override
             public void run() {
-                alarmTimeTextView.setText(getString(R.string.alarmTimeTextFormat, hourOfDay , minute));
+                timeText.setSummary(getString(R.string.alarmTimeTextFormat, hourOfDay , minute));
             }
         });
     }
