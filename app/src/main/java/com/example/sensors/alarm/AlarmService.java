@@ -6,14 +6,11 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.IBinder;
-import android.os.SystemClock;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
@@ -28,6 +25,8 @@ public class AlarmService extends Service {
     private static final String TAG = "AlarmService";
 
     private int hour, minute;
+
+    private int speedLimit;
 
     private AlarmManager alarmManager;
     private PendingIntent pendingIntent;
@@ -51,10 +50,16 @@ public class AlarmService extends Service {
         hour = intent.getIntExtra("hour", 8);
         minute = intent.getIntExtra("minute", 30);
 
-        createNotificationChannel();
+        speedLimit = intent.getIntExtra("speedLimit", 100);
 
-        setupAlarm();
-        showAlarmNotification();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                createNotificationChannel();
+                setupAlarm();
+                showAlarmNotification();
+            }
+        }).start();
 
         return super.onStartCommand(intent, flags, startId);
     }
@@ -69,6 +74,7 @@ public class AlarmService extends Service {
 
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(this, AlarmReceiver.class);
+        intent.putExtra("speedLimit", speedLimit);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 1, intent, 0);
         alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
                 pendingIntent);

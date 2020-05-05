@@ -1,12 +1,6 @@
 package com.example.sensors;
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.DialogFragment;
-
 import android.app.Activity;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.Context;
@@ -15,16 +9,18 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.CompoundButton;
+import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.sensors.alarm.AlarmReceiver;
-import com.example.sensors.lockscreen.AdminReceiver;
-import com.example.sensors.alarm.AlarmService;
-import com.example.sensors.lockscreen.LockScreenService;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.DialogFragment;
 
-import java.util.Calendar;
+import com.example.sensors.alarm.AlarmService;
+import com.example.sensors.lockscreen.AdminReceiver;
+import com.example.sensors.lockscreen.LockScreenService;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -37,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
     private Switch shakeDetectionSwitch;
     private Switch lockScreenSwitch;
     private TextView alarmTimeTextView;
+    private SeekBar seekBar;
 
     private boolean isAnyAlarmActivated = false;
 
@@ -59,6 +56,8 @@ public class MainActivity extends AppCompatActivity {
         shakeDetectionSwitch = findViewById(R.id.shakeDetectionSwitch);
         lockScreenSwitch = findViewById(R.id.lockScreenServiceSwitch);
         alarmTimeTextView = findViewById(R.id.alarmTimeTextView);
+        seekBar = findViewById(R.id.seekBar);
+
         lockScreenSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -112,6 +111,7 @@ public class MainActivity extends AppCompatActivity {
                         isAnyAlarmActivated = false;
                         Intent intent = new Intent(getApplicationContext(), AlarmService.class);
                         stopService(intent);
+                        Toast.makeText(getApplicationContext(), "Alarm disabled.", Toast.LENGTH_SHORT).show();
                     } else {
                         Log.i(TAG, "onCheckedChanged: there wasn't any alarms in progress");
                         Toast.makeText(getApplicationContext(), getResources().getString(R.string.noActivatedAlarm), Toast.LENGTH_SHORT).show();
@@ -158,8 +158,11 @@ public class MainActivity extends AppCompatActivity {
         String[] time = alarmTimeTextView.getText().toString().split(":");
         int hour = Integer.parseInt(time[0]), minute = Integer.parseInt(time[1]);
 
+        int angularSpeedLimit = seekBar.getProgress();
+
         Log.i(TAG, "setUpAlarm: starting alarmService");
         Intent alarmIntent = new Intent(this, AlarmService.class);
+        alarmIntent.putExtra("speedLimit", angularSpeedLimit);
         alarmIntent.putExtra("hour", hour);
         alarmIntent.putExtra("minute", minute);
         startService(alarmIntent);

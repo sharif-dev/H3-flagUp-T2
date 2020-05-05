@@ -12,7 +12,7 @@
     <string name="alarmNotificationChannelName">Alarm notifications</string>
     <string name="alarmNotificationChannelDescription">Alarm set notifications</string>
 
-    <string name="alarmAdded">getResources().getString(R.string.shakeDetectionDisabled)</string>
+    <string name="alarmAdded">Alarm Added.</string>
     <string name="setTheTimeFirst">Set the time first.</string>
     <string name="noActivatedAlarm">There\'s no activated alarm.</string>
 

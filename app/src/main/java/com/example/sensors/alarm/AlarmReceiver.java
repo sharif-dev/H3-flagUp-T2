@@ -14,6 +14,8 @@ public class AlarmReceiver extends BroadcastReceiver {
         Log.i(TAG, "onReceive called in broadcast receiver");       //todo change the log.e
         Intent alarmActivityIntent = new Intent(context, AlarmActivity.class);
         alarmActivityIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        int speedLimit = intent.getIntExtra("speedLimit", 100);
+        alarmActivityIntent.putExtra("speedLimit", speedLimit);
         context.startActivity(alarmActivityIntent);
     }
 }
