@@ -16,8 +16,9 @@ public class LockScreenService extends Service implements SensorEventListener {
     private DevicePolicyManager deviceManager;
     private SensorManager sensorManager;
     private Sensor gravitySensor;
-    private double angle = Math.PI / 4;
+    private double angle;
     private static final double MAX_GRAVITY = 9.81;
+    private static final int DEFAULT_ANGLE = 80;
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
@@ -30,6 +31,8 @@ public class LockScreenService extends Service implements SensorEventListener {
         gravitySensor = sensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY);
         deviceManager = (DevicePolicyManager)getSystemService(Context.DEVICE_POLICY_SERVICE);
         sensorManager.registerListener(this, gravitySensor, SensorManager.SENSOR_DELAY_NORMAL);
+        int intAngle = intent.getIntExtra("angle", DEFAULT_ANGLE);
+        angle = Math.toRadians(intAngle);
         return super.onStartCommand(intent, flags, startId);
     }
 

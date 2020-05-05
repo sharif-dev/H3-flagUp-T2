@@ -1,0 +1,21 @@
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <Preference
+        app:fragment="com.example.sensors.LockScreenActivity$AlarmFragment"
+        app:icon="@drawable/alarm_icon"
+        app:key="alarm_header"
+        app:title="@string/alarm_header" />
+
+    <Preference
+        app:fragment="com.example.sensors.LockScreenActivity$ShakeFragment"
+        app:icon="@drawable/shake_icon"
+        app:key="shake_header"
+        app:title="@string/shake_header" />
+
+    <Preference
+        app:fragment="com.example.sensors.LockScreenActivity$LockScreenFragment"
+        app:icon="@drawable/phone_lock_icon"
+        app:key="lock_header"
+        app:title="@string/lock_header" />
+
+</PreferenceScreen>
