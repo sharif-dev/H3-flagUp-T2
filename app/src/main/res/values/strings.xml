@@ -21,6 +21,16 @@
     <string name="shakeDetectionDisabled">Shake Detection service disabled</string>
     <string name="lockScreenEnabled">Lock Screen service enabled</string>
     <string name="lockScreenDisabled">Lock Screen service disabled</string>
+    <string name="title_activity_lock_screen">Settings</string>
+
+    <!-- Preference Titles -->
+    <string name="alarm_header">Set an Alarm</string>
+    <string name="shake_header">Light Screen on Shake</string>
+    <string name="shake_title">Enable Light Screen on Shake Service</string>
+    <string name="lock_header">Lock Screen on Tilt</string>
+    <string name="lock_title">Enable Lock Screen on Tilt Service</string>
+    <string name="angle_description">Angle that phone locks:</string>
+    <string name="current_angle">Current Angle: %1$d degrees</string>
 
 
 </resources>
