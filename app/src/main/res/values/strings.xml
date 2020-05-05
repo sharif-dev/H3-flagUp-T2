@@ -28,6 +28,7 @@
     <string name="alarmDismiss">Rotate the phone to dismiss alarm</string>
     <string name="shakeHeader">Light Screen on Shake</string>
     <string name="shakeTitle">Enable Light Screen on Shake Service</string>
+    <string name="shakeSensitivity">Shake Sensitivity (Higher means you need to shake harder)</string>
     <string name="lockHeader">Lock Screen on Tilt</string>
     <string name="lockTitle">Enable Lock Screen on Tilt Service</string>
     <string name="angleDescription">Angle that phone locks:</string>

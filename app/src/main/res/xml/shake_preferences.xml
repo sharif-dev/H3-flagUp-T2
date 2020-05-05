@@ -1,14 +1,16 @@
-<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
     <SwitchPreferenceCompat
         app:key="status"
         app:title="@string/shakeTitle" />
 
-<!--    <SwitchPreferenceCompat-->
-<!--        app:dependency="sync"-->
-<!--        app:key="attachment"-->
-<!--        app:summaryOff="@string/attachment_summary_off"-->
-<!--        app:summaryOn="@string/attachment_summary_on"-->
-<!--        app:title="@string/attachment_title" />-->
+    <SeekBarPreference
+        android:id="@+id/sensitivity"
+        android:defaultValue="20"
+        android:max="25"
+        app:key="sensitivity"
+        app:min="6"
+        app:summary="@string/shakeSensitivity" />
 
 </PreferenceScreen>

@@ -188,29 +188,54 @@ public class MainActivity extends AppCompatActivity implements
 	}
 
 	public static class ShakeFragment extends PreferenceFragmentCompat {
+		private SeekBarPreference sensitivity;
+		private SwitchPreferenceCompat status;
 		@Override
 		public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
 			setPreferencesFromResource(R.xml.shake_preferences, rootKey);
-			SwitchPreferenceCompat status = findPreference("status");
+			status = findPreference("status");
+			sensitivity = findPreference("sensitivity");
+			sensitivity.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+				@Override
+				public boolean onPreferenceChange(Preference preference, Object newValue) {
+					if (status.isChecked())
+					{
+						stopShakeDetectionService();
+						startShakeDetectionService();
+					}
+					return true;
+				}
+			});
 			if (status != null)
 			{
 				status.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
 					@Override
 					public boolean onPreferenceChange(Preference preference, Object newValue) {
 						boolean isChecked = (boolean)newValue;
-						if (isChecked) {
-							Intent intent = new Intent(getContext(), ShakeDetectionService.class);
-							getContext().startService(intent);
-							Toast.makeText(getContext(), getResources().getString(R.string.shakeDetectionEnabled), Toast.LENGTH_SHORT).show();
-						} else {
-							Intent intent = new Intent(getContext(), ShakeDetectionService.class);
-							getContext().stopService(intent);
-							Toast.makeText(getContext(), getResources().getString(R.string.shakeDetectionDisabled), Toast.LENGTH_SHORT).show();
-						}
+						if (isChecked)
+							startShakeDetectionService();
+						 else
+							stopShakeDetectionService();
+
 						return true;
 					}
+
+
 				});
 			}
+		}
+
+		private void stopShakeDetectionService() {
+			Intent intent = new Intent(getContext(), ShakeDetectionService.class);
+			getContext().stopService(intent);
+			Toast.makeText(getContext(), getResources().getString(R.string.shakeDetectionDisabled), Toast.LENGTH_SHORT).show();
+		}
+
+		private void startShakeDetectionService() {
+			Intent intent = new Intent(getContext(), ShakeDetectionService.class);
+			intent.putExtra("shakeSensitvity", (float)sensitivity.getValue());
+			getContext().startService(intent);
+			Toast.makeText(getContext(), getResources().getString(R.string.shakeDetectionEnabled), Toast.LENGTH_SHORT).show();
 		}
 	}
 
@@ -269,7 +294,7 @@ public class MainActivity extends AppCompatActivity implements
 			});
 		}
 
-		private static void stopLockScreenService() {
+		private void stopLockScreenService() {
 			Log.i(TAG, "onCheckedChanged: stopping lock screen service");
 			Intent intent = new Intent(MainActivity.getContext(), LockScreenService.class);
 			if (MainActivity.getContext().stopService(intent))

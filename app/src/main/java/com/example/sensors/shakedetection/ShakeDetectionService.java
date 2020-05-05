@@ -21,6 +21,9 @@ public class ShakeDetectionService extends Service implements SensorEventListene
     private float accVal;
     private float lastAccVal;
     private float shake;
+    private float shakeSensitivity;
+    private static final float DEFAULT_SHAKE_SENSITIVITY = 6;
+
     @Override
     public void onSensorChanged(SensorEvent event) {
         float x = event.values[0];
@@ -32,12 +35,16 @@ public class ShakeDetectionService extends Service implements SensorEventListene
         float delta = accVal - lastAccVal;
         shake = shake * 0.9f + delta;
 
-        if (shake > 6) {
-//                Toast toast = Toast.makeText(getApplicationContext(), "Do Not Shake Me", Toast.LENGTH_LONG);
-//                toast.show();
+        if (shake > shakeSensitivity) {
             Log.i("shake activity", "Shake detection");
             startActivityFunc();
         }
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        shakeSensitivity = intent.getFloatExtra("shakeSensitvity", DEFAULT_SHAKE_SENSITIVITY);
+        return super.onStartCommand(intent, flags, startId);
     }
 
     @Override
@@ -74,4 +81,6 @@ public class ShakeDetectionService extends Service implements SensorEventListene
         super.onDestroy();
         sensorManager.unregisterListener(this);
     }
+
+
 }
