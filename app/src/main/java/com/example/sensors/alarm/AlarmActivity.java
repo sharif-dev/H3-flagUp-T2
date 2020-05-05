@@ -67,7 +67,7 @@ public class AlarmActivity extends AppCompatActivity {
         vibrator.cancel();
         mediaPlayer.release();
         sensorManager.unregisterListener(gyroscopeEventListener);
-        Toast.makeText(getApplicationContext(), "Alarm stopped.", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), getResources().getString(R.string.alarmDismissedMessage), Toast.LENGTH_SHORT).show();
         finish();
     }
 
